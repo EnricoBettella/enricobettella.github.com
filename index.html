@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<!--
+TO WEB DESIGNERS AND DEVELOPERS OUT THERE: If you're reading this, I'm a bit nervous, but while I'm at it, let me tell you that this page simply works, and that's about it.
+I'm not a web designer, so I'm just trying to create something functional, but there may be errors or lack of efficiency, of course.
+
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Enrico Bettella - Work in progress...</title>
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="IMG/FAVICON/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="IMG/FAVICON/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="IMG/FAVICON/favicon-16x16.png">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --bg-color-dark: #1a1a1a;
+            --text-color-dark: #ffffff;
+
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #coming-soon-container {
+            text-align: center;
+            margin-top: 10%;
+        }
+
+        #coming-soon-image {
+            width: 80%;
+            max-width: 400px;
+            height: auto;
+        }
+
+        .langSelector {
+            color: inherit;
+            cursor: pointer;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        a[href^="mailto:"] {
+            color: #C636B8;
+        }
+
+        .footer {
+            width: 100%;
+            background-color: #9a9a9a7f;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+
+    <script async>
+        // Function to fetch language data
+        async function fetchLanguageData(lang) {
+            const response = await fetch(`LANG/${lang}.json`);
+            return response.json();
+        }
+
+        // Function to set the language preference
+        function setLanguagePreference(lang) {
+            localStorage.setItem('language', lang);
+            location.reload();
+        }
+
+        // Function to update content based on selected language
+        function updateContent(langData) {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                element.textContent = langData[key];
+            });
+        }
+
+        // Function to change language
+        async function changeLanguage(lang) {
+            await setLanguagePreference(lang);
+
+            const langData = await fetchLanguageData(lang);
+            updateContent(langData);
+        }
+
+        // Call updateContent() on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            const userPreferredLanguage = localStorage.getItem('language') || navigator.language.substring(0, 2) || 'en';
+            console.log('User Preferred Language:', userPreferredLanguage);
+            console.log('navigator language:', navigator.language.substring(0, 2));
+            const langData = await fetchLanguageData(userPreferredLanguage);
+            console.log('Language Data:', langData);
+            updateContent(langData);
+        });
+
+        function setLanguagePreference(lang) {
+        if (!localStorage.getItem('language')) {
+            localStorage.setItem('language', lang);
+        } else {
+            localStorage.removeItem('language');
+            localStorage.setItem('language', lang);
+        }
+        location.reload();
+}
+
+    </script>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div class="container mb-auto">
+        <div id="coming-soon-container">
+            <img id="coming-soon-image" src="IMG/WIP_grafica_dark.svg" alt="Coming Soon">
+
+            <h2 data-i18n="title"></h2>
+            <p data-i18n="paragraph"></p>
+
+            <p>
+                <span data-i18n="contact–me"></span>
+                <a href="mailto:sono@enrico.bet?subject=Richiesta di contatto">sono@enrico.bet</a>
+            </p>
+        </div>
+    </div>
+
+    <footer class="footer mt-5">
+        <span>&copy; 2023 Enrico Bettella • </span>
+        <a onclick="changeLanguage('it')" class="langSelector">IT</a>
+        <a onclick="changeLanguage('en')" class="langSelector">EN</a>
+    </footer>
+
+    <!-- Color mode -->
+    <script>
+        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+        const comingSoonImage = document.getElementById("coming-soon-image");
+
+        function updateColors() {
+            if (prefersDarkScheme.matches) {
+                document.body.style.setProperty('--bg-color', 'var(--bg-color-dark)');
+                document.body.style.setProperty('--text-color', 'var(--text-color-dark)');
+                comingSoonImage.src = "IMG/WIP_grafica_dark.svg";
+            } else {
+                document.body.style.setProperty('--bg-color', 'var(--bg-color-light)');
+                document.body.style.setProperty('--text-color', 'var(--text-color-light)');
+                comingSoonImage.src = "IMG/WIP_grafica_light.svg";
+            }
+        }
+
+        // Initial update
+        updateColors();
+
+        // Listen for changes in color scheme preference
+        prefersDarkScheme.addEventListener("change", updateColors);
+    </script>
+
+</body>
+
+</html>
